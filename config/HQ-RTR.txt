@@ -1,0 +1,314 @@
+HQ-RT#show run
+Building configuration...
+
+Current configuration : 1876 bytes
+!
+version 15.1
+service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname HQ-RT
+!
+!
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default group tacacs+ local 
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username admin privilege 15 secret 5 $1$mERr$Pq3/lr0agnISq0fxb9TUZ0
+!
+!
+license udi pid CISCO2911/K9 sn FTX152401O6-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name branch.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel0
+ ip address 10.0.0.1 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 203.0.113.6
+!
+!
+interface GigabitEthernet0/0
+ ip address 192.168.10.254 255.255.255.0
+ ip helper-address 192.168.40.1
+ ip access-group BLOCK_MANAGEMENT in
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 203.0.113.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ ip ospf 1 area 0
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ passive-interface GigabitEthernet0/0
+ network 10.0.0.0 0.0.0.3 area 0
+ network 192.168.10.0 0.0.0.255 area 0
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 203.0.113.2 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended BLOCK_MANAGEMENT
+ permit udp 192.168.10.0 0.0.0.255 host 192.168.40.1 eq domain
+ deny ip 192.168.10.0 0.0.0.255 192.168.30.0 0.0.0.255
+ deny ip 192.168.10.0 0.0.0.255 192.168.40.0 0.0.0.255
+ deny tcp 192.168.10.0 0.0.0.255 any eq 22
+ permit ip any any
+!
+!
+tacacs-server host 192.168.40.2
+tacacs-server key CISCOKEY
+!
+!
+!
+logging 192.168.40.2
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login authentication default
+ transport input ssh
+!
+!
+!
+end
+
+
+HQ-RT#show ip int g0/0
+GigabitEthernet0/0 is up, line protocol is up (connected)
+  Internet address is 192.168.10.254/24
+  Broadcast address is 255.255.255.255
+  Address determined by setup command
+  MTU is 1500 bytes
+  Helper address is 192.168.40.1
+  Directed broadcast forwarding is disabled
+  Outgoing access list is not set
+  Inbound  access list is BLOCK_MANAGEMENT
+  Proxy ARP is enabled
+  Security level is default
+  Split horizon is enabled
+  ICMP redirects are always sent
+  ICMP unreachables are always sent
+  ICMP mask replies are never sent
+  IP fast switching is disabled
+  IP fast switching on the same interface is disabled
+  IP Flow switching is disabled
+  IP Fast switching turbo vector
+  IP multicast fast switching is disabled
+  IP multicast distributed fast switching is disabled
+  Router Discovery is disabled
+  IP output packet accounting is disabled
+  IP access violation accounting is disabled
+  TCP/IP header compression is disabled
+  RTP/IP header compression is disabled
+  Probe proxy name replies are disabled
+  Policy routing is disabled
+  Network address translation is disabled
+  BGP Policy Mapping is disabled
+  Input features: MCI Check
+  WCCP Redirect outbound is disabled
+  WCCP Redirect inbound is disabled
+  WCCP Redirect exclude is disabled
+
+HQ-RT#wr
+Building configuration...
+[OK]
+HQ-RT#
+HQ-RT#show run
+Building configuration...
+
+Current configuration : 1876 bytes
+!
+version 15.1
+service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname HQ-RT
+!
+!
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default group tacacs+ local 
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username admin privilege 15 secret 5 $1$mERr$Pq3/lr0agnISq0fxb9TUZ0
+!
+!
+license udi pid CISCO2911/K9 sn FTX152401O6-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name branch.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel0
+ ip address 10.0.0.1 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/1
+ tunnel destination 203.0.113.6
+!
+!
+interface GigabitEthernet0/0
+ ip address 192.168.10.254 255.255.255.0
+ ip helper-address 192.168.40.1
+ ip access-group BLOCK_MANAGEMENT in
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 203.0.113.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ ip ospf 1 area 0
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ passive-interface GigabitEthernet0/0
+ network 10.0.0.0 0.0.0.3 area 0
+ network 192.168.10.0 0.0.0.255 area 0
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 203.0.113.2 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended BLOCK_MANAGEMENT
+ permit udp 192.168.10.0 0.0.0.255 host 192.168.40.1 eq domain
+ deny ip 192.168.10.0 0.0.0.255 192.168.30.0 0.0.0.255
+ deny ip 192.168.10.0 0.0.0.255 192.168.40.0 0.0.0.255
+ deny tcp 192.168.10.0 0.0.0.255 any eq 22
+ permit ip any any
+!
+!
+tacacs-server host 192.168.40.2
+tacacs-server key CISCOKEY
+!
+!
+!
+logging 192.168.40.2
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login authentication default
+ transport input ssh
+!
+!
+!
+end

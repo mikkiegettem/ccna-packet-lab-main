@@ -1,0 +1,134 @@
+BR-RT#show run
+Building configuration...
+
+Current configuration : 1715 bytes
+!
+version 15.1
+service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname BR-RT
+!
+!
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login default group tacacs+ local 
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username admin privilege 15 secret 5 $1$mERr$Pq3/lr0agnISq0fxb9TUZ0
+!
+!
+license udi pid CISCO2911/K9 sn FTX15249443-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name branch.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel0
+ ip address 10.0.0.2 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/0
+ tunnel destination 203.0.113.1
+!
+!
+interface GigabitEthernet0/0
+ ip address 203.0.113.6 255.255.255.252
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ ip address 10.10.10.1 255.255.255.252
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/2
+ no ip address
+ ip ospf 1 area 0
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 2.2.2.2
+ log-adjacency-changes
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.10.10.0 0.0.0.3 area 0
+!
+ip nat inside source list NAT_ACL interface GigabitEthernet0/0 overload
+ip classless
+ip route 0.0.0.0 0.0.0.0 203.0.113.5 
+!
+ip flow-export version 9
+!
+!
+ip access-list standard NAT_ACL
+ permit 192.168.20.0 0.0.0.255
+ permit 192.168.30.0 0.0.0.255
+ permit 192.168.40.0 0.0.0.255
+!
+!
+tacacs-server host 192.168.40.2
+tacacs-server key CISCOKEY
+!
+!
+!
+logging 192.168.40.2
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login authentication default
+ transport input ssh
+!
+!
+!
+end
